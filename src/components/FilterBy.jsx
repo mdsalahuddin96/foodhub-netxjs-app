@@ -4,29 +4,29 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const FilterBy = () => {
-  // const [filterBy,setFilterBy]=useState('burger')
-  const [selectedKeys, setSelectedKeys] = useState(new Set());
+  const [selectedKeys, setSelectedKeys] = useState("");
 
   const route = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  useEffect(()=>{
-    if(params){
-      params.set('category',selectedKeys)
+
+  useEffect(() => {
+    if (selectedKeys) {
+      if (params) {
+        params.set("category", selectedKeys);
+      } else {
+        params.delete("category");
+      }
+      route.replace(`${pathName}?${params}`);
     }
-    else{
-      params.delete('category')
-    }
-    route.replace(`${pathName}?${params}`)
-  },[selectedKeys])
-  
+  }, [selectedKeys]);
+
   return (
     <Select
-      name="select"
       className="w-[256px]"
       placeholder="Select one"
-      selectedKeys={selectedKeys}
+      selectedKey={selectedKeys}
       onSelectionChange={setSelectedKeys}
     >
       <Label>Filter By Category</Label>
@@ -52,11 +52,6 @@ const FilterBy = () => {
             Beverage
             <ListBox.ItemIndicator />
           </ListBox.Item>
-
-          {/* <ListBox.Item id="all" textValue="">
-            All Category
-            <ListBox.ItemIndicator />
-          </ListBox.Item> */}
         </ListBox>
       </Select.Popover>
     </Select>

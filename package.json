@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "server": "json-server --watch db.json --port 4000"
+    "lint": "eslint"
   },
   "dependencies": {
     "@heroui/react": "^3.0.3",
@@ -19,7 +18,6 @@
   "devDependencies": {
     "@gravity-ui/icons": "^2.18.0",
     "@tailwindcss/postcss": "^4",
-    "daisyui": "^5.5.19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4"
