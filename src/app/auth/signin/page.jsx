@@ -1,4 +1,5 @@
 "use client";
+import { authClient } from "@/lib/auth-client";
 import { Check } from "@gravity-ui/icons";
 import {
   Button,
@@ -12,15 +13,19 @@ import {
 import Link from "next/link";
 
 const SignInPage = () => {
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // const formData = new FormData(e.currentTarget);
-    // const data: Record<string, string> = {};
-    // // Convert FormData to plain object
-    // formData.forEach((value, key) => {
-    //   data[key] = value.toString();
-    // });
-    // alert(`Form submitted with: ${JSON.stringify(data, null, 2)}`);
+    const formData = new FormData(e.currentTarget);
+    const userData = Object.fromEntries(formData);
+    const { data, error } = await authClient.signIn.email({
+      email: userData.email,
+      password: userData.password,
+      rememberMe: true,
+      callbackURL: "/dashboard",
+    });
+    if(error){
+      alert('Invalid Email or Password!')
+    }
   };
   return (
     <div className="flex justify-center items-center min-h-screen">

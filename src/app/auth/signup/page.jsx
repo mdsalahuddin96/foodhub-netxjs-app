@@ -1,4 +1,5 @@
 "use client";
+import { authClient } from "@/lib/auth-client";
 import { Check } from "@gravity-ui/icons";
 import {
   Button,
@@ -9,18 +10,33 @@ import {
   Label,
   TextField,
 } from "@heroui/react";
-
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const SignUpPage = () => {
-  const onSubmit = (e) => {
+  const router = useRouter();
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // const formData = new FormData(e.currentTarget);
-    // const data: Record<string, string> = {};
-    // // Convert FormData to plain object
-    // formData.forEach((value, key) => {
-    //   data[key] = value.toString();
-    // });
-    // alert(`Form submitted with: ${JSON.stringify(data, null, 2)}`);
+    const formData = new FormData(e.currentTarget);
+    const userData = Object.fromEntries(formData);
+    const { data, error } = await authClient.signUp.email(
+      {
+        name: userData.name,
+        email: userData.email, // required
+        password: userData.password, // required
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    );
+    if (error) {
+      toast.error("Error signing up: " + error.message);
+    } else {
+      toast.success("SignUp Successful!");
+    }
   };
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -28,17 +44,12 @@ const SignUpPage = () => {
         className="flex w-96 flex-col gap-4 border border-gray-300 p-4 rounded-2xl shadow-2xl"
         onSubmit={onSubmit}
       >
-        <TextField
-          isRequired
-          name="name"
-          type="text"
-        >
+        <TextField type="text">
           <Label>Name</Label>
-          <Input placeholder="Enter your name" />
+          <Input name="name" placeholder="Enter your name" />
         </TextField>
         <TextField
           isRequired
-          name="email"
           type="email"
           validate={(value) => {
             if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
@@ -48,13 +59,12 @@ const SignUpPage = () => {
           }}
         >
           <Label>Email</Label>
-          <Input placeholder="john@example.com" />
+          <Input name="email" placeholder="john@example.com" />
           <FieldError />
         </TextField>
         <TextField
           isRequired
           minLength={8}
-          name="password"
           type="password"
           validate={(value) => {
             if (value.length < 8) {
@@ -70,7 +80,7 @@ const SignUpPage = () => {
           }}
         >
           <Label>Password</Label>
-          <Input placeholder="Enter your password" />
+          <Input name="password" placeholder="Enter your password" />
           <Description>
             Must be at least 8 characters with 1 uppercase and 1 number
           </Description>
