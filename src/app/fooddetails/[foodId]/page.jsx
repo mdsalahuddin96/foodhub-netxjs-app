@@ -1,5 +1,6 @@
-// import React from 'react';
 
+
+import OrderNowBtn from "@/components/OrderNowBtn";
 import { CircleCheck, Star } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 import Image from "next/image";
@@ -16,8 +17,9 @@ const FoodDetailsPage = async ({ params }) => {
     `https://phi-lab-server.vercel.app/api/v1/lab/foods/${foodId}`
   );
   const data = await res.json();
+  const food=data.data;
   const { dish_name, category, rating, price, image_link, main_ingredients } =
-    data.data;
+    food
   return (
     <div className="container mx-auto grid grid-cols-3 gap-4 p-10">
       <div className="border border-gray-200 flex justify-center items-center rounded-2xl">
@@ -56,7 +58,7 @@ const FoodDetailsPage = async ({ params }) => {
             </p>
           ))}
         </div>
-        <Button>Order Now</Button>
+        <OrderNowBtn food={food}/>
       </div>
     </div>
   );
